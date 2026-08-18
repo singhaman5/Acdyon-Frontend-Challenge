@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import HowItWorks from './components/HowItWorks';
+import TryQuestion from './components/TryQuestion';
 import ProductShowcase from './components/ProductShowcase';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
@@ -52,6 +53,7 @@ export default function App() {
         <Hero />
         <div className="reveal"><Features /></div>
         <div className="reveal"><HowItWorks /></div>
+        <div className="reveal"><TryQuestion /></div>
         <div className="reveal"><ProductShowcase /></div>
         <div className="reveal"><FinalCTA /></div>
       </main>

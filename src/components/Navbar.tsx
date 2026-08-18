@@ -33,8 +33,8 @@ export default function Navbar() {
     >
       <nav className="container-main flex items-center justify-between" aria-label="Main navigation">
         {/* Logo */}
-        <a href="#" className="text-xl font-bold text-neutral-900 tracking-tight" aria-label="PrepIQ home">
-          Prep<span className="text-accent-600">IQ</span>
+        <a href="#" className="group text-xl font-bold text-neutral-900 tracking-tight" aria-label="PrepIQ home">
+          Prep<span className="text-accent-600 inline-block transition-transform duration-200 group-hover:-rotate-3 group-hover:text-accent-500">IQ</span>
         </a>
 
         {/* Desktop links */}

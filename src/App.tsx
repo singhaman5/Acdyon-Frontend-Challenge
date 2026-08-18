@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -8,26 +8,45 @@ import ProductShowcase from './components/ProductShowcase';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 
+// Konami Code sequence: ↑↑↓↓←→←→BA
+const KONAMI_SEQUENCE = [
+  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+  'b', 'a',
+];
+
 export default function App() {
-  const [toast, setToast] = useState<{ visible: boolean; exiting: boolean }>({
+  const [toast, setToast] = useState<{ visible: boolean; exiting: boolean; message: string }>({
     visible: false,
     exiting: false,
+    message: '',
   });
+  const konamiIndex = useRef(0);
 
-  // Easter egg: Ctrl+K / Cmd+K
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      setToast({ visible: true, exiting: false });
-      setTimeout(() => setToast({ visible: true, exiting: true }), 2700);
-      setTimeout(() => setToast({ visible: false, exiting: false }), 3000);
-    }
+  const showToast = useCallback((message: string) => {
+    setToast({ visible: true, exiting: false, message });
+    setTimeout(() => setToast((t) => ({ ...t, exiting: true })), 2700);
+    setTimeout(() => setToast({ visible: false, exiting: false, message: '' }), 3000);
   }, []);
 
+  // Easter egg: Konami Code (↑↑↓↓←→←→BA)
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const expected = KONAMI_SEQUENCE[konamiIndex.current];
+      if (e.key === expected || e.key.toLowerCase() === expected) {
+        konamiIndex.current++;
+        if (konamiIndex.current === KONAMI_SEQUENCE.length) {
+          konamiIndex.current = 0;
+          showToast('🎮 You found the easter egg. Now go practice graphs.');
+        }
+      } else {
+        konamiIndex.current = 0;
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
+  }, [showToast]);
 
   // Scroll reveal — Intersection Observer
   useEffect(() => {
@@ -39,7 +58,7 @@ export default function App() {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
@@ -59,7 +78,7 @@ export default function App() {
       </main>
       <Footer />
 
-      {/* Easter egg toast */}
+      {/* Toast notification */}
       {toast.visible && (
         <div
           className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-neutral-900 text-white text-sm font-medium rounded-lg shadow-lg
@@ -67,7 +86,7 @@ export default function App() {
           role="status"
           aria-live="polite"
         >
-          You found the weak area. 🎯
+          {toast.message}
         </div>
       )}
     </>

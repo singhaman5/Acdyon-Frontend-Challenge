@@ -22,6 +22,10 @@
     margin: 0;
   }
 
+  ::selection {
+    background-color: #c7d2fe;
+    color: #312e81;
+  }
 }
 
 @layer components {
